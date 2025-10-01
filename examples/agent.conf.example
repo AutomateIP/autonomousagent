@@ -1,0 +1,38 @@
+# Autonomous Agent Configuration File - Example
+# Copy this to agent.conf and customize for your environment
+
+[agent]
+# System prompt file path
+system_prompt = ./prompts/agent_system.prompt
+
+# Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+log_level = INFO
+
+# Maximum iterations for agent reasoning loop (prevents infinite loops)
+max_iterations = 10
+
+[llm]
+# LLM provider: anthropic or openai
+provider = anthropic
+
+# Model to use
+# Anthropic: claude-sonnet-4-20250514, claude-3-5-sonnet-20241022, claude-3-haiku-20240307
+# OpenAI: gpt-4, gpt-4-turbo, gpt-3.5-turbo
+model = claude-sonnet-4-20250514
+
+# Temperature for LLM responses (0.0 to 1.0)
+# Lower = more focused/deterministic, Higher = more creative/varied
+temperature = 0.7
+
+# Maximum tokens for LLM responses
+max_tokens = 4096
+
+[mcp]
+# MCP configuration file path (contains MCP server definitions)
+config_file = ./mcp_config.json
+
+# Itential MCP configuration file (if using itential-mcp)
+itential_mcp_conf = ./itential-mcp.conf
+
+# MCP connection timeout in seconds
+timeout = 120

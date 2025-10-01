@@ -1,0 +1,47 @@
+{
+  "mcpServers": {
+    "itential-mcp": {
+      "autoApprove": [],
+      "disabled": false,
+      "timeout": 60,
+      "command": "uv",
+      "args": [
+        "--directory",
+        "./itential-mcp",
+        "run",
+        "itential-mcp",
+        "run",
+        "--config",
+        "./itential-mcp.conf"
+      ],
+      "type": "stdio"
+    },
+    "time": {
+      "autoApprove": [],
+      "disabled": false,
+      "timeout": 60,
+      "command": "uv",
+      "args": [
+        "--directory",
+        "./mcps/mcp-servers/src/time",
+        "run",
+        "mcp-server-time"
+      ],
+      "type": "stdio"
+    },
+    "filesystem": {
+      "autoApprove": [],
+      "disabled": false,
+      "timeout": 60,
+      "command": "uv",
+      "args": [
+        "--directory",
+        "./mcps/mcp-servers/src/filesystem",
+        "run",
+        "mcp-server-filesystem",
+        "./workspace"
+      ],
+      "type": "stdio"
+    }
+  }
+}

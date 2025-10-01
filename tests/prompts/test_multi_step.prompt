@@ -1,0 +1,1 @@
+Get the current time, then create an HTML file called "time_report.html" in the workspace directory that displays the current time in a nicely formatted way. The HTML should have a title "Current Time Report" and show the time you retrieved.

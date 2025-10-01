@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+
+# UV
+.venv/
+uv.lock
+
+# Environment Variables
+# Note: .env is tracked but should be kept private
+# Use .env.example as template
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/*
+!logs/.gitkeep
+
+# Workspace (generated files)
+workspace/*
+!workspace/.gitkeep
+
+# Test outputs (generated files)
+files/*
+!files/.gitkeep
+
+# Archives
+archive/
+
+# Agent output
+*.log
+
+#mcps
+mcps/*

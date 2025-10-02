@@ -41,6 +41,13 @@ class MCPClient:
                 logger.info(f"Server {self.name} is disabled, skipping")
                 return False
             
+            # Check transport type
+            transport_type = self.config.get("type", "stdio")
+            if transport_type == "http":
+                logger.warning(f"HTTP transport not yet implemented for {self.name}, skipping")
+                logger.info(f"To use {self.name}, HTTP transport support needs to be added to MCPClient")
+                return False
+            
             # Convert our config format to FastMCP config format
             fastmcp_config = {
                 "mcpServers": {

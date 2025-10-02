@@ -25,7 +25,8 @@ model = claude-sonnet-4-20250514
 temperature = 0.7
 
 # Maximum tokens for LLM responses
-max_tokens = 4096
+# Note: Increase for tasks that generate large content (e.g., HTML files, reports)
+max_tokens = 8192
 
 [mcp]
 # MCP configuration file path (contains MCP server definitions)

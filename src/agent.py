@@ -43,6 +43,43 @@ async def main_async():
         
         # Initialize MCP manager and connect to all servers
         async with create_mcp_manager(mcp_config) as mcp_manager:
+            # Handle --show-mcps flag
+            if config.args.show_mcps:
+                print("\n" + "="*80)
+                print("MCP SERVERS STATUS")
+                print("="*80)
+                for name, client in mcp_manager.clients.items():
+                    status = "✅ Connected" if client.client else "❌ Not Connected"
+                    tool_count = len(client.get_tools())
+                    print(f"\n{name}:")
+                    print(f"  Status: {status}")
+                    print(f"  Tools: {tool_count}")
+                    print(f"  Config: {client.config.get('type', 'stdio')} transport")
+                print("\n" + "="*80)
+                print(f"Total: {len(mcp_manager.clients)} servers connected")
+                print(f"Total tools: {len(mcp_manager.get_all_tools())}")
+                print("="*80 + "\n")
+                return 0
+            
+            # Handle --list-tools flag
+            if config.args.list_tools:
+                print("\n" + "="*80)
+                print("AVAILABLE TOOLS BY MCP SERVER")
+                print("="*80)
+                for name, client in mcp_manager.clients.items():
+                    tools = client.get_tools()
+                    print(f"\n{name} ({len(tools)} tools):")
+                    print("-" * 60)
+                    for tool in tools:
+                        desc = tool['description'][:60] + "..." if len(tool['description']) > 60 else tool['description']
+                        print(f"  • {tool['name']}")
+                        if desc:
+                            print(f"    {desc}")
+                print("\n" + "="*80)
+                print(f"Total: {len(mcp_manager.get_all_tools())} tools available")
+                print("="*80 + "\n")
+                return 0
+            
             # Get agent configuration
             max_iterations = config.get_max_iterations()
             

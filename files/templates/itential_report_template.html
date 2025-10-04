@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Itential AI Report Template</title>
+    
+    <!-- Google Fonts for Itential Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #00001E;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: #00001E;
+        }
+        
+        /* Top Banner */
+        .header-banner {
+            background-color: #00001E;
+            padding: 30px 40px;
+            border-bottom: 4px solid #0099FF;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .header-logo {
+            height: 50px;
+            width: auto;
+        }
+        
+        .header-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5em;
+            color: #ffffff;
+            letter-spacing: 2px;
+        }
+        
+        .header-badge {
+            background: linear-gradient(135deg, #0099FF 0%, #AD0AFD 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 0.9em;
+            letter-spacing: 1px;
+        }
+        
+        /* Main Content Area */
+        .content-wrapper {
+            background-color: white;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Report Header Section */
+        .report-header {
+            background: #0099FF;
+            color: white;
+            padding: 50px 60px;
+            text-align: center;
+        }
+        
+        .report-header h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3em;
+            margin-bottom: 15px;
+            letter-spacing: 3px;
+        }
+        
+        .report-header .subtitle {
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.3em;
+            font-weight: 500;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 1em;
+            margin: 5px;
+            letter-spacing: 1px;
+        }
+        
+        .status-success {
+            background-color: #71DE3C;
+            color: #00001E;
+        }
+        
+        .status-error {
+            background-color: #FF0095;
+            color: white;
+        }
+        
+        .status-warning {
+            background-color: #F36B21;
+            color: white;
+        }
+        
+        .status-info {
+            background-color: #0099FF;
+            color: white;
+        }
+        
+        .status-up {
+            background-color: #71DE3C;
+            color: #00001E;
+        }
+        
+        .status-down {
+            background-color: #FF0095;
+            color: white;
+        }
+        
+        /* Content Sections */
+        .content {
+            padding: 50px 60px;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+            border-left: 5px solid #0099FF;
+            padding-left: 30px;
+        }
+        
+        .section h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            color: #00001E;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        
+        .section h3 {
+            font-family: 'Roboto', sans-serif;
+            color: #0099FF;
+            font-size: 1.5em;
+            font-weight: 700;
+            margin: 25px 0 15px 0;
+        }
+        
+        /* Executive Summary Box */
+        .summary-box {
+            background: #AD0AFD;
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin: 30px 0;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(173, 10, 253, 0.3);
+        }
+        
+        .summary-box h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        
+        .summary-box p {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1.2em;
+            line-height: 1.8;
+        }
+        
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 25px 0;
+        }
+        
+        .info-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #0099FF;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 153, 255, 0.2);
+        }
+        
+        .info-card .label {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            color: #0099FF;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .info-card .value {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1.15em;
+            color: #00001E;
+            font-weight: 600;
+        }
+        
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+            margin: 30px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #0099FF 0%, #AD0AFD 100%);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 35px;
+            padding-left: 25px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -48px;
+            top: 5px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #0099FF;
+            border: 4px solid white;
+            box-shadow: 0 0 0 4px #0099FF;
+        }
+        
+        .timeline-item .time {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            color: #0099FF;
+            margin-bottom: 8px;
+            font-size: 1.05em;
+        }
+        
+        .timeline-item .description {
+            font-family: 'Open Sans', sans-serif;
+            color: #555;
+            line-height: 1.7;
+        }
+        
+        /* Code Block */
+        .code-block {
+            background: #00001E;
+            color: #71DE3C;
+            padding: 25px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 20px 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            border: 2px solid #0099FF;
+        }
+        
+        /* Comparison Section */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .comparison-item {
+            padding: 30px;
+            border-radius: 12px;
+            border: 3px solid;
+        }
+        
+        .comparison-before {
+            background: #fff0f5;
+            border-color: #FF0095;
+        }
+        
+        .comparison-after {
+            background: #f0fff4;
+            border-color: #71DE3C;
+        }
+        
+        .comparison-item h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            letter-spacing: 1.5px;
+        }
+        
+        .comparison-before h4 {
+            color: #FF0095;
+        }
+        
+        .comparison-after h4 {
+            color: #71DE3C;
+        }
+        
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            font-family: 'Open Sans', sans-serif;
+        }
+        
+        .metric-label {
+            font-weight: 700;
+            color: #00001E;
+        }
+        
+        /* Bottom Banner */
+        .footer-banner {
+            background-color: #00001E;
+            padding: 40px 60px;
+            border-top: 4px solid #0099FF;
+            color: white;
+            text-align: center;
+        }
+        
+        .footer-content {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 0.95em;
+            line-height: 2;
+        }
+        
+        .footer-content p {
+            margin: 5px 0;
+        }
+        
+        .footer-content strong {
+            font-family: 'Roboto', sans-serif;
+            color: #0099FF;
+            font-weight: 700;
+        }
+        
+        .footer-branding {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(0, 153, 255, 0.3);
+        }
+        
+        .footer-logo {
+            height: 40px;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+        
+        .footer-tagline {
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.9em;
+            color: #0099FF;
+            font-style: italic;
+            margin-top: 10px;
+        }
+        
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-20 {
+            margin-top: 20px;
+        }
+        
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-banner {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px;
+            }
+            
+            .header-title {
+                font-size: 1.8em;
+            }
+            
+            .report-header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-banner {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Banner with Logo and Title -->
+        <div class="header-banner">
+            <div class="header-logo-section">
+                <!-- Itential Logo - Replace src with actual logo URL -->
+                <img src="/Users/joksan.flores/Downloads/AI_Sandbox/side_projects/autonomous_agent/files/templates/itential_icon_dark.png" alt="Itential Logo" class="header-logo">
+                <h1 class="header-title">ITENTIAL AI</h1>
+            </div>
+            <div class="header-badge">
+                AUTOMATION REPORT
+            </div>
+        </div>
+        
+        <!-- Main Content Wrapper -->
+        <div class="content-wrapper">
+            <!-- Report Header Section -->
+            <div class="report-header">
+                <h1>🔧 [REPORT TITLE]</h1>
+                <div class="subtitle">[Report Subtitle/Description]</div>
+                <div style="margin-top: 25px;">
+                    <span class="status-badge status-success">✓ [STATUS]</span>
+                </div>
+            </div>
+            
+            <!-- Main Content Area -->
+            <div class="content">
+                <!-- Executive Summary -->
+                <div class="summary-box">
+                    <h3>📊 Executive Summary</h3>
+                    <p>
+                        [Executive summary content goes here. Provide a high-level overview of the incident, 
+                        automation action, or report findings. Include key metrics and outcomes.]
+                    </p>
+                </div>
+                
+                <!-- Section 1: Information -->
+                <div class="section">
+                    <h2>📋 [Section Title]</h2>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <div class="label">[Label 1]</div>
+                            <div class="value">[Value 1]</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="label">[Label 2]</div>
+                            <div class="value">[Value 2]</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="label">[Label 3]</div>
+                            <div class="value">[Value 3]</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="label">[Label 4]</div>
+                            <div class="value">[Value 4]</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="label">[Label 5]</div>
+                            <div class="value">[Value 5]</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="label">[Label 6]</div>
+                            <div class="value">[Value 6]</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section 2: Timeline -->
+                <div class="section">
+                    <h2>⏱️ [Timeline/Events]</h2>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="time">[Timestamp] - [Event Title]</div>
+                            <div class="description">
+                                [Event description and details]
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="time">[Timestamp] - [Event Title]</div>
+                            <div class="description">
+                                [Event description and details]
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="time">[Timestamp] - [Event Title]</div>
+                            <div class="description">
+                                [Event description and details]
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section 3: Before/After Comparison -->
+                <div class="section">
+                    <h2>🔄 Before & After Comparison</h2>
+                    <div class="comparison">
+                        <div class="comparison-item comparison-before">
+                            <h4>❌ BEFORE</h4>
+                            <div class="metric-row">
+                                <span class="metric-label">[Metric 1]:</span>
+                                <span class="status-badge status-down">[Value]</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">[Metric 2]:</span>
+                                <span>[Value]</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">[Metric 3]:</span>
+                                <span>[Value]</span>
+                            </div>
+                        </div>
+                        
+                        <div class="comparison-item comparison-after">
+                            <h4>✅ AFTER</h4>
+                            <div class="metric-row">
+                                <span class="metric-label">[Metric 1]:</span>
+                                <span class="status-badge status-up">[Value]</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">[Metric 2]:</span>
+                                <span>[Value]</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">[Metric 3]:</span>
+                                <span>[Value]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section 4: Technical Details -->
+                <div class="section">
+                    <h2>📄 [Technical Details/Output]</h2>
+                    
+                    <h3>[Subsection Title]</h3>
+                    <div class="code-block">[Technical output, logs, or code goes here
+This area supports monospace formatting for CLI output,
+configuration snippets, or other technical data]</div>
+                    
+                    <h3>[Another Subsection]</h3>
+                    <p style="line-height: 1.8; margin-top: 15px;">
+                        [Additional technical information or explanatory text can go here. 
+                        This section can contain paragraphs, lists, or other formatted content.]
+                    </p>
+                </div>
+                
+                <!-- Section 5: Workflow/Actions -->
+                <div class="section">
+                    <h2>⚙️ [Workflow/Actions Taken]</h2>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <div class="label">[Detail 1]</div>
+                            <div class="value">[Value 1]</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="label">[Detail 2]</div>
+                            <div class="value">[Value 2]</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="label">[Detail 3]</div>
+                            <div class="value">[Value 3]</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="label">[Detail 4]</div>
+                            <div class="value">[Value 4]</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section 6: Results/Metrics -->
+                <div class="section">
+                    <h2>📈 [Results & Metrics]</h2>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <div class="label">[Metric 1]</div>
+                            <div class="value">[Value 1]</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="label">[Metric 2]</div>
+                            <div class="value">[Value 2]</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="label">[Metric 3]</div>
+                            <div class="value">[Value 3]</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="label">[Metric 4]</div>
+                            <div class="value">[Value 4]</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section 7: Conclusion -->
+                <div class="section">
+                    <h2>✅ Conclusion</h2>
+                    <div style="background: #f0fff4; border: 3px solid #71DE3C; padding: 30px; border-radius: 12px; margin-top: 20px;">
+                        <p style="line-height: 1.8; font-size: 1.1em;">
+                            <strong>Status: [STATUS]</strong><br><br>
+                            [Conclusion text goes here. Summarize the outcomes, current state, 
+                            and any recommendations or next steps. Include key success factors 
+                            and final verification status.]
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Banner -->
+        <div class="footer-banner">
+            <div class="footer-content">
+                <p><strong>Report Generated:</strong> [Date and Time]</p>
+                <p><strong>Automation Platform:</strong> Itential Automation Platform</p>
+                <p><strong>Report Type:</strong> [Report Type/Category]</p>
+            </div>
+            
+            <div class="footer-branding">
+                <!-- Itential Logo - Replace src with actual logo URL -->
+                <img src="https://www.itential.com/wp-content/uploads/2022/08/itential-logo-horizontal-white-text.svg" alt="Itential" class="footer-logo">
+                <div class="footer-tagline">
+                    Network Automation Platform
+                </div>
+                <p style="margin-top: 15px; font-size: 0.9em; opacity: 0.8;">
+                    This report was automatically generated by Itential AI
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

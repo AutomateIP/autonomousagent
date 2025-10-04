@@ -1,0 +1,1 @@
+Check the status of interface GigabitEthernet1.201 in IOS-CSR-AWS-1. If interface has an issue wait 10 seconds and launch the router port troubleshooting service with remediation enabled. Inspect the state afterwards and create an html report of all actions taken, incident information and results of the remediation. 

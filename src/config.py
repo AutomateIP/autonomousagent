@@ -64,6 +64,16 @@ class Config:
             action="store_true",
             help="Enable debug logging (overrides config file)"
         )
+        parser.add_argument(
+            "--show-mcps",
+            action="store_true",
+            help="Show connected MCP servers and exit"
+        )
+        parser.add_argument(
+            "--list-tools",
+            action="store_true",
+            help="List all available tools from all MCPs and exit"
+        )
         return parser.parse_args()
     
     def _load_config_file(self) -> configparser.ConfigParser:

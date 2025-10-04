@@ -85,6 +85,8 @@ class Agent:
         # After responding, end
         workflow.add_edge("respond", END)
         
+        # Compile the workflow
+        # Note: To increase recursion limit, use config={'recursion_limit': 50} when calling ainvoke
         return workflow.compile()
     
     def _reasoning_node(self, state: AgentState) -> AgentState:
@@ -327,8 +329,11 @@ class Agent:
             "pending_tool_calls": []
         }
         
-        # Run the graph
-        final_state = await self.graph.ainvoke(initial_state)
+        # Run the graph with increased recursion limit for complex workflows
+        final_state = await self.graph.ainvoke(
+            initial_state,
+            config={"recursion_limit": 50}
+        )
         
         # Extract final response
         final_response = final_state.get('final_response', '')

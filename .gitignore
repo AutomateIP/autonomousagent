@@ -55,6 +55,7 @@ workspace/*
 # Test outputs (generated files)
 files/*
 !files/.gitkeep
+!files/templates
 
 # Archives
 archive/

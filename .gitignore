@@ -30,7 +30,7 @@ env/
 uv.lock
 
 # Environment Variables
-# Note: .env is tracked but should be kept private
+.env
 # Use .env.example as template
 
 # IDE

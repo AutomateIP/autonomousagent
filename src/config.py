@@ -52,7 +52,7 @@ class Config:
         parser.add_argument(
             "--llm-provider",
             type=str,
-            help="LLM provider (anthropic, openai) (overrides config file)"
+            help="LLM provider (anthropic, openai, gemini, bedrock, ollama, etc.) (overrides config file)"
         )
         parser.add_argument(
             "--llm-model",
@@ -132,20 +132,30 @@ class Config:
         if not Path(mcp_config_path).exists():
             raise FileNotFoundError(f"MCP config not found: {mcp_config_path}")
         
-        # Check API keys
+        # Check API keys for providers that require them
         provider = self._get_config_value(
             self.args.llm_provider,
             "llm", "provider",
             "LLM_PROVIDER",
             "anthropic"
         )
-        
+
+        # Validate API keys for common providers (not exhaustive since LiteLLM supports 100+)
         if provider == "anthropic":
             if not os.getenv("ANTHROPIC_API_KEY"):
                 raise ValueError("ANTHROPIC_API_KEY not set in environment")
         elif provider == "openai":
             if not os.getenv("OPENAI_API_KEY"):
                 raise ValueError("OPENAI_API_KEY not set in environment")
+        elif provider == "gemini" or provider == "google":
+            if not os.getenv("GEMINI_API_KEY"):
+                raise ValueError("GEMINI_API_KEY not set in environment")
+        elif provider == "bedrock":
+            # Bedrock uses AWS credentials
+            if not (os.getenv("AWS_ACCESS_KEY_ID") and os.getenv("AWS_SECRET_ACCESS_KEY")):
+                raise ValueError("AWS credentials (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY) not set in environment")
+        # Note: ollama and other local providers don't require API keys
+        # Note: LiteLLM supports 100+ providers, so we only validate the most common ones
     
     def load_mcp_config(self) -> Dict[str, Any]:
         """Load MCP server configuration from JSON file."""
@@ -213,13 +223,24 @@ class Config:
         }
     
     def _get_api_key(self, provider: str) -> str:
-        """Get API key for configured provider."""
+        """
+        Get API key for configured provider.
+
+        Note: LiteLLM handles API key lookup from environment variables automatically,
+        so we just return empty string for most cases. The provider-specific validation
+        in _validate_config ensures required keys are set.
+        """
+        # Return API key for common providers (LiteLLM will also check env vars)
         if provider == "anthropic":
             return os.getenv("ANTHROPIC_API_KEY", "")
         elif provider == "openai":
             return os.getenv("OPENAI_API_KEY", "")
+        elif provider == "gemini" or provider == "google":
+            return os.getenv("GEMINI_API_KEY", "")
         else:
-            raise ValueError(f"Unsupported provider: {provider}")
+            # For other providers (bedrock, ollama, etc.), LiteLLM handles credentials
+            # Return empty string - LiteLLM will use environment variables
+            return ""
     
     def get_max_iterations(self) -> int:
         """Get maximum iterations from config."""

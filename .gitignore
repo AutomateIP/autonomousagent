@@ -37,6 +37,7 @@ mcp_config.json
 # IDE
 .vscode/
 .idea/
+.claude/
 *.swp
 *.swo
 *~

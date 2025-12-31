@@ -226,12 +226,21 @@ class Config:
         return int(self.conf.get("agent", "max_iterations", fallback="10"))
     
     def setup_logging(self) -> None:
-        """Configure logging based on settings."""
+        """Configure logging based on settings with separate console and file levels."""
+        # Determine console and file log levels
         if self.args.debug:
-            level = logging.DEBUG
+            console_level = logging.DEBUG
+            file_level = logging.DEBUG
         else:
-            log_level_str = self.conf.get("agent", "log_level", fallback="INFO")
-            level = getattr(logging, log_level_str.upper(), logging.INFO)
+            # Get console log level (for terminal output)
+            console_log_str = self.conf.get("agent", "console_log_level",
+                                           fallback=self.conf.get("agent", "log_level", fallback="INFO"))
+            console_level = getattr(logging, console_log_str.upper(), logging.INFO)
+
+            # Get file log level (for logs/ directory)
+            file_log_str = self.conf.get("agent", "file_log_level",
+                                        fallback=self.conf.get("agent", "log_level", fallback="INFO"))
+            file_level = getattr(logging, file_log_str.upper(), logging.INFO)
 
         # Create logs directory if it doesn't exist
         log_dir = Path("./logs")
@@ -242,14 +251,23 @@ class Config:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         log_file = log_dir / f"agent_{timestamp}.log"
 
-        # Configure logging with both file and console handlers
-        logging.basicConfig(
-            level=level,
-            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            handlers=[
-                logging.FileHandler(log_file),
-                logging.StreamHandler()
-            ]
-        )
+        # Create formatters
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-        logger.info(f"Logging to {log_file}")
+        # Create and configure file handler
+        file_handler = logging.FileHandler(log_file)
+        file_handler.setLevel(file_level)
+        file_handler.setFormatter(formatter)
+
+        # Create and configure console handler
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(console_level)
+        console_handler.setFormatter(formatter)
+
+        # Configure root logger with the minimum level needed
+        root_logger = logging.getLogger()
+        root_logger.setLevel(min(console_level, file_level))
+        root_logger.addHandler(file_handler)
+        root_logger.addHandler(console_handler)
+
+        logger.info(f"Logging to {log_file} (file: {file_log_str.upper()}, console: {console_log_str.upper()})")

@@ -18,7 +18,7 @@ Thank you for your interest in contributing! This document provides guidelines f
 3. **Configure Environment**
    ```bash
    cp .env.example .env
-   cp mcp_config.json.example mcp_config.json
+   cp examples/mcp_config.json.example mcp_config.json
    # Edit .env and mcp_config.json with your settings
    ```
 

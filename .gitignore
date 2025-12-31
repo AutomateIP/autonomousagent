@@ -39,7 +39,7 @@ htmlcov/
 # Environment Variables
 .env
 mcp_config.json
-# Use .env.example and mcp_config.json.example as templates
+# Use .env.example and examples/mcp_config.json.example as templates
 
 # IDE
 .vscode/

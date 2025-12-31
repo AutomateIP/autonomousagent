@@ -29,6 +29,13 @@ env/
 .venv/
 uv.lock
 
+# Python cache and testing
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
 # Environment Variables
 .env
 mcp_config.json

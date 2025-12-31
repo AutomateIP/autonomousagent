@@ -232,8 +232,24 @@ class Config:
         else:
             log_level_str = self.conf.get("agent", "log_level", fallback="INFO")
             level = getattr(logging, log_level_str.upper(), logging.INFO)
-        
+
+        # Create logs directory if it doesn't exist
+        log_dir = Path("./logs")
+        log_dir.mkdir(exist_ok=True)
+
+        # Generate log filename with timestamp
+        from datetime import datetime
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        log_file = log_dir / f"agent_{timestamp}.log"
+
+        # Configure logging with both file and console handlers
         logging.basicConfig(
             level=level,
-            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            handlers=[
+                logging.FileHandler(log_file),
+                logging.StreamHandler()
+            ]
         )
+
+        logger.info(f"Logging to {log_file}")

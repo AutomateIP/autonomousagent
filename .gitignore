@@ -67,4 +67,5 @@ archive/
 #mcps
 mcps/*
 
+itential-mcp.conf
 itential-mcp.conf.env

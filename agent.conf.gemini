@@ -1,0 +1,39 @@
+# Autonomous Agent Configuration File - Google Gemini Testing
+# This file configures the agent to use Google Gemini models
+
+[agent]
+# System prompt file path
+system_prompt = ./prompts/agent_system.prompt
+
+# Logging levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+# Console logging level (what you see in terminal)
+console_log_level = ERROR
+# File logging level (what gets written to logs/)
+file_log_level = INFO
+
+# Maximum iterations for agent reasoning loop
+max_iterations = 15
+
+[llm]
+# LLM provider
+provider = gemini
+
+# Model to use
+# Options: gemini/gemini-pro, gemini/gemini-1.5-pro, gemini/gemini-1.5-flash
+model = gemini/gemini-3-flash
+
+# Temperature for LLM responses (0.0 to 1.0)
+temperature = 0.7
+
+# Maximum tokens for LLM responses
+max_tokens = 16384
+
+[mcp]
+# MCP configuration file path
+config_file = ./mcp_config.json
+
+# Itential MCP configuration file (if using itential-mcp)
+itential_mcp_conf = ./itential-mcp.conf
+
+# MCP connection timeout (seconds)
+timeout = 120

@@ -13,6 +13,7 @@ An autonomous AI agent that:
 ## Features
 
 - 🤖 **LLM-Driven Decision Making** - Uses LangGraph for autonomous task execution
+- 🌐 **Multi-Provider Support** - Works with 100+ LLM providers via LiteLLM (Claude, GPT, Gemini, Bedrock, Ollama, and more)
 - 🔌 **MCP Support** - Connects to MCP servers (FastMCP, standard MCP)
 - 🛠️ **Dynamic Tool Discovery** - Automatically finds and uses available tools
 - ⚙️ **Flexible Configuration** - CLI > Config File > Env Variables > Defaults
@@ -27,9 +28,9 @@ git clone https://github.com/AutomateIP/autonomousagent.git
 cd autonomous_agent
 uv sync
 
-# 2. Configure API key
+# 2. Configure API key for your chosen provider
 cp .env.example .env
-# Edit .env and add: ANTHROPIC_API_KEY=your-key-here
+# Edit .env and add your API key (e.g., ANTHROPIC_API_KEY, OPENAI_API_KEY, etc.)
 
 # 3. Configure MCP servers (optional)
 cp examples/mcp_config.json.example mcp_config.json
@@ -45,7 +46,12 @@ uv run agent --agent-file tests/prompts/test_time.prompt
 
 - Python 3.11+
 - UV package manager - [Install](https://github.com/astral-sh/uv)
-- Anthropic API key - [Get key](https://console.anthropic.com/)
+- API key for your chosen LLM provider:
+  - Anthropic (Claude) - [Get key](https://console.anthropic.com/)
+  - OpenAI (GPT) - [Get key](https://platform.openai.com/)
+  - Google (Gemini) - [Get key](https://makersuite.google.com/app/apikey)
+  - AWS Bedrock - [Setup guide](https://docs.aws.amazon.com/bedrock/)
+  - Ollama (local) - [Install guide](https://ollama.ai/)
 
 ## Installation
 
@@ -56,7 +62,7 @@ uv sync
 # Set up configuration files
 cp .env.example .env
 cp examples/mcp_config.json.example mcp_config.json
-# Edit .env with your ANTHROPIC_API_KEY
+# Edit .env with your API key (ANTHROPIC_API_KEY, OPENAI_API_KEY, etc.)
 # Edit mcp_config.json with your MCP server paths (use absolute paths)
 ```
 
@@ -93,6 +99,42 @@ uv run agent --show-mcps
 # List all available tools
 uv run agent --list-tools
 ```
+
+## LLM Provider Support
+
+This framework supports 100+ LLM providers through [LiteLLM](https://docs.litellm.ai/docs/), including:
+
+- **Anthropic** (Claude models) - Recommended for best results
+- **OpenAI** (GPT models)
+- **Google** (Gemini models)
+- **AWS Bedrock** (Various models)
+- **Ollama** (Local models)
+- And many more!
+
+### Switching Providers
+
+Update your [agent.conf](examples/agent.conf.example):
+
+```ini
+[llm]
+# For Claude (Anthropic)
+provider = anthropic
+model = claude-sonnet-4-5-20250929
+
+# For GPT (OpenAI)
+provider = openai
+model = gpt-4
+
+# For Gemini (Google)
+provider = gemini
+model = gemini/gemini-pro
+
+# For Ollama (Local)
+provider = ollama
+model = ollama/llama2
+```
+
+Add the corresponding API key to your [.env](.env.example) file.
 
 ## Configuration
 

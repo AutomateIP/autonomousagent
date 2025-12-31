@@ -119,25 +119,31 @@ class Agent:
             
             logger.info(f"LLM stop reason: {response['stop_reason']}")
             
-            # Add assistant message to history
+            # Add assistant message to history (OpenAI format for LiteLLM)
             assistant_message = {
                 "role": "assistant",
-                "content": []
+                "content": ""
             }
-            
+
             # Add text content
             for content_block in response['content']:
-                assistant_message['content'].append(content_block)
-            
-            # Add tool calls
-            for tool_call in response['tool_calls']:
-                assistant_message['content'].append({
-                    "type": "tool_use",
-                    "id": tool_call['id'],
-                    "name": f"{tool_call['server']}_{tool_call['name']}",
-                    "input": tool_call['arguments']
-                })
-            
+                if content_block.get('type') == 'text':
+                    assistant_message['content'] = content_block.get('text', '')
+
+            # Add tool calls if any (OpenAI format)
+            if response['tool_calls']:
+                import json
+                assistant_message['tool_calls'] = []
+                for tool_call in response['tool_calls']:
+                    assistant_message['tool_calls'].append({
+                        "id": tool_call['id'],
+                        "type": "function",
+                        "function": {
+                            "name": f"{tool_call['server']}_{tool_call['name']}",
+                            "arguments": json.dumps(tool_call['arguments'])
+                        }
+                    })
+
             state['messages'].append(assistant_message)
             
             # Store tool calls in state for execution
@@ -185,38 +191,33 @@ class Agent:
                     arguments=tool_call['arguments']
                 )
                 
-                # Format result for Claude
+                # Format result for LiteLLM (OpenAI format)
                 if result['success']:
                     tool_result = {
-                        "type": "tool_result",
-                        "tool_use_id": tool_call['id'],
+                        "role": "tool",
+                        "tool_call_id": tool_call['id'],
                         "content": str(result['result'])
                     }
                 else:
                     tool_result = {
-                        "type": "tool_result",
-                        "tool_use_id": tool_call['id'],
-                        "content": f"Error: {result.get('error', 'Unknown error')}",
-                        "is_error": True
+                        "role": "tool",
+                        "tool_call_id": tool_call['id'],
+                        "content": f"Error: {result.get('error', 'Unknown error')}"
                     }
-                
+
                 tool_results.append(tool_result)
                 
             except Exception as e:
                 logger.error(f"Error executing tool {tool_call['name']}: {e}")
                 tool_results.append({
-                    "type": "tool_result",
-                    "tool_use_id": tool_call['id'],
-                    "content": f"Error executing tool: {str(e)}",
-                    "is_error": True
+                    "role": "tool",
+                    "tool_call_id": tool_call['id'],
+                    "content": f"Error executing tool: {str(e)}"
                 })
         
-        # Add tool results to messages
+        # Add tool results to messages (each as a separate message in OpenAI format)
         if tool_results:
-            state['messages'].append({
-                "role": "user",
-                "content": tool_results
-            })
+            state['messages'].extend(tool_results)
         
         # Clear pending tool calls
         state['pending_tool_calls'] = []
@@ -246,26 +247,13 @@ class Agent:
         final_response = ""
         for message in reversed(state['messages']):
             if message['role'] == 'assistant':
-                content = message.get('content', [])
+                content = message.get('content', '')
                 logger.debug(f"Processing assistant content: {content}")
-                
-                # Handle both list and direct content
-                if isinstance(content, list):
-                    for item in content:
-                        if isinstance(item, dict) and item.get('type') == 'text':
-                            final_response = item.get('text', '')
-                            logger.debug(f"Found text in type=text: {final_response[:100]}")
-                            break
-                        elif isinstance(item, dict) and 'text' in item:
-                            final_response = item.get('text', '')
-                            logger.debug(f"Found text in text key: {final_response[:100]}")
-                            break
-                elif isinstance(content, str):
+
+                # Content should be a string in OpenAI format
+                if isinstance(content, str) and content:
                     final_response = content
-                    logger.debug(f"Found text as string: {final_response[:100]}")
-                    break
-                
-                if final_response:
+                    logger.debug(f"Found text response: {final_response[:100] if len(final_response) > 100 else final_response}")
                     break
         
         logger.info(f"Extracted response length: {len(final_response)}")

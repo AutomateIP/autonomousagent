@@ -6,7 +6,7 @@ Get up and running with the Autonomous Agent Framework in 5 minutes.
 
 - Python 3.11+ installed
 - UV package manager installed: `curl -LsSf https://astral.sh/uv/install.sh | sh`
-- Anthropic API key: [Get one here](https://console.anthropic.com/)
+- API key for your chosen LLM provider (see [Supported Providers](#supported-llm-providers))
 
 ## Installation
 
@@ -26,9 +26,23 @@ This installs all required packages (~30 seconds).
 cp .env.example .env
 ```
 
-Edit `.env` and add your API key:
+Edit `.env` and add your API key for your chosen provider:
 ```bash
+# For Anthropic (Claude) - Recommended
 ANTHROPIC_API_KEY=sk-ant-api03-your-actual-key-here
+
+# Or for OpenAI (GPT)
+# OPENAI_API_KEY=sk-your-actual-key-here
+
+# Or for Google (Gemini)
+# GEMINI_API_KEY=your-actual-key-here
+
+# Or for AWS Bedrock
+# AWS_ACCESS_KEY_ID=your-access-key
+# AWS_SECRET_ACCESS_KEY=your-secret-key
+# AWS_REGION_NAME=us-east-1
+
+# Or for Ollama (local - no API key needed)
 ```
 
 ### Step 3: Configure MCP Servers
@@ -134,12 +148,53 @@ uv run agent --list-tools
 tail -f logs/agent_*.log
 ```
 
+## Supported LLM Providers
+
+This framework supports 100+ LLM providers through [LiteLLM](https://docs.litellm.ai/docs/). Here are the most common:
+
+### Anthropic (Claude) - Recommended
+- Best for complex reasoning and tool use
+- Models: `claude-sonnet-4-5-20250929`, `claude-3-5-sonnet-20241022`
+- Get API key: [console.anthropic.com](https://console.anthropic.com/)
+
+### OpenAI (GPT)
+- Popular and widely available
+- Models: `gpt-4`, `gpt-4-turbo`, `gpt-3.5-turbo`
+- Get API key: [platform.openai.com](https://platform.openai.com/)
+
+### Google (Gemini)
+- Google's flagship model
+- Models: `gemini/gemini-pro`, `gemini/gemini-1.5-pro`
+- Get API key: [makersuite.google.com](https://makersuite.google.com/app/apikey)
+
+### AWS Bedrock
+- Access to multiple providers through AWS
+- Models: `bedrock/anthropic.claude-v2`, `bedrock/anthropic.claude-3-sonnet-20240229-v1:0`
+- Setup: [docs.aws.amazon.com/bedrock](https://docs.aws.amazon.com/bedrock/)
+
+### Ollama (Local)
+- Run models locally on your machine
+- Models: `ollama/llama2`, `ollama/mistral`, `ollama/codellama`
+- Install: [ollama.ai](https://ollama.ai/)
+
+### Switching Providers
+
+Edit `agent.conf`:
+```ini
+[llm]
+provider = openai  # Change to your provider
+model = gpt-4      # Change to your model
+```
+
+And ensure the corresponding API key is set in `.env`.
+
 ## Troubleshooting
 
-### "ANTHROPIC_API_KEY not set in environment"
+### "ANTHROPIC_API_KEY not set in environment" (or similar for other providers)
 - Check `.env` file exists
 - Verify API key is set correctly
 - Ensure no extra spaces or quotes
+- Verify you're using the correct environment variable name for your provider
 
 ### "Agent file not found"
 - Check file path is correct

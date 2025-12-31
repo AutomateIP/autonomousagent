@@ -1,194 +1,209 @@
-"""LLM provider abstraction layer."""
+"""LLM provider abstraction layer using LiteLLM."""
 
 import logging
+import os
 from typing import Dict, List, Any, Optional
-from anthropic import Anthropic
+from litellm import completion
 
 logger = logging.getLogger(__name__)
 
 
 class LLMProvider:
-    """Base class for LLM providers."""
-    
-    def __init__(self, model: str, api_key: str):
+    """Universal LLM provider using LiteLLM."""
+
+    def __init__(self, model: str, api_key: Optional[str] = None):
         """
         Initialize LLM provider.
-        
+
         Args:
-            model: Model identifier
-            api_key: API key for authentication
+            model: Model identifier (e.g., "claude-3-opus-20240229", "gpt-4", "gemini/gemini-pro")
+            api_key: API key for authentication (optional, can use env vars)
         """
         self.model = model
-        self.api_key = api_key
-    
+
+        # LiteLLM uses environment variables for API keys by default
+        # We'll set them if provided
+        if api_key:
+            # Determine provider from model name and set appropriate env var
+            if model.startswith("claude") or model.startswith("anthropic"):
+                os.environ["ANTHROPIC_API_KEY"] = api_key
+            elif model.startswith("gpt") or model.startswith("openai"):
+                os.environ["OPENAI_API_KEY"] = api_key
+            elif model.startswith("gemini") or model.startswith("google"):
+                os.environ["GEMINI_API_KEY"] = api_key
+            elif model.startswith("bedrock"):
+                # Bedrock uses AWS credentials
+                pass
+            elif model.startswith("ollama"):
+                # Ollama typically doesn't need API key
+                pass
+
     def format_messages(self, system_prompt: str, user_prompt: str, history: List[Dict[str, Any]] = None) -> List[Dict[str, str]]:
         """
         Format messages for the LLM.
-        
+
         Args:
             system_prompt: System prompt
             user_prompt: User prompt
             history: Conversation history
-            
+
         Returns:
             Formatted messages
         """
         messages = []
-        
+
         if history:
             messages.extend(history)
-        
+
         messages.append({
             "role": "user",
             "content": user_prompt
         })
-        
+
         return messages
-    
-    def chat(self, messages: List[Dict[str, str]], system_prompt: str, tools: List[Dict[str, Any]] = None) -> Dict[str, Any]:
-        """
-        Send chat request to LLM.
-        
-        Args:
-            messages: List of messages
-            system_prompt: System prompt
-            tools: Available tools
-            
-        Returns:
-            LLM response
-        """
-        raise NotImplementedError("Subclass must implement chat method")
 
+    def _convert_tools_to_openai_format(self, tools: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """
+        Convert MCP tool definitions to OpenAI function calling format.
+        LiteLLM uses OpenAI's format as the standard and converts for other providers.
 
-class AnthropicProvider(LLMProvider):
-    """Anthropic Claude LLM provider."""
-    
-    def __init__(self, model: str, api_key: str):
-        """
-        Initialize Anthropic provider.
-        
-        Args:
-            model: Claude model identifier
-            api_key: Anthropic API key
-        """
-        super().__init__(model, api_key)
-        self.client = Anthropic(api_key=api_key)
-    
-    def _convert_tools_to_anthropic_format(self, tools: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """
-        Convert MCP tool definitions to Anthropic tool format.
-        
         Args:
             tools: List of MCP tool definitions
-            
+
         Returns:
-            List of Anthropic-formatted tools
+            List of OpenAI-formatted tools
         """
-        anthropic_tools = []
-        
+        openai_tools = []
+
         for tool in tools:
-            anthropic_tool = {
-                "name": f"{tool['server']}_{tool['name']}",
-                "description": tool['description'] or f"Tool {tool['name']} from {tool['server']} MCP server",
-                "input_schema": tool['input_schema']
+            openai_tool = {
+                "type": "function",
+                "function": {
+                    "name": f"{tool['server']}_{tool['name']}",
+                    "description": tool['description'] or f"Tool {tool['name']} from {tool['server']} MCP server",
+                    "parameters": tool['input_schema']
+                }
             }
-            anthropic_tools.append(anthropic_tool)
-        
-        return anthropic_tools
-    
+            openai_tools.append(openai_tool)
+
+        return openai_tools
+
     def chat(self, messages: List[Dict[str, str]], system_prompt: str, tools: List[Dict[str, Any]] = None, temperature: float = 0.7, max_tokens: int = 4096) -> Dict[str, Any]:
         """
-        Send chat request to Claude.
-        
+        Send chat request to LLM via LiteLLM.
+
         Args:
             messages: List of messages
             system_prompt: System prompt
             tools: Available MCP tools
             temperature: Temperature for response generation
             max_tokens: Maximum tokens for response
-            
+
         Returns:
             Dict containing response and any tool calls
         """
         try:
-            logger.debug(f"Sending request to Claude {self.model}")
-            
+            logger.debug(f"Sending request to {self.model} via LiteLLM")
+
             # Prepare request parameters
             request_params = {
                 "model": self.model,
-                "max_tokens": max_tokens,
+                "messages": [{"role": "system", "content": system_prompt}] + messages,
                 "temperature": temperature,
-                "system": system_prompt,
-                "messages": messages
+                "max_tokens": max_tokens
             }
-            
+
             # Add tools if provided
             if tools:
-                anthropic_tools = self._convert_tools_to_anthropic_format(tools)
-                request_params["tools"] = anthropic_tools
-                logger.debug(f"Including {len(anthropic_tools)} tools in request")
-            
-            # Make API call
-            response = self.client.messages.create(**request_params)
-            
-            logger.debug(f"Received response from Claude: {response.stop_reason}")
-            
+                openai_tools = self._convert_tools_to_openai_format(tools)
+                request_params["tools"] = openai_tools
+                request_params["tool_choice"] = "auto"
+                logger.debug(f"Including {len(openai_tools)} tools in request")
+
+            # Make API call via LiteLLM
+            response = completion(**request_params)
+
+            logger.debug(f"Received response: {response.choices[0].finish_reason}")
+
             # Parse response
+            choice = response.choices[0]
+            message = choice.message
+
             result = {
                 "id": response.id,
                 "model": response.model,
-                "stop_reason": response.stop_reason,
+                "stop_reason": choice.finish_reason,
                 "content": [],
                 "tool_calls": [],
                 "usage": {
-                    "input_tokens": response.usage.input_tokens,
-                    "output_tokens": response.usage.output_tokens
+                    "input_tokens": response.usage.prompt_tokens,
+                    "output_tokens": response.usage.completion_tokens
                 }
             }
-            
-            # Extract content and tool calls
-            for block in response.content:
-                if block.type == "text":
-                    result["content"].append({
-                        "type": "text",
-                        "text": block.text
-                    })
-                elif block.type == "tool_use":
+
+            # Extract content
+            if message.content:
+                result["content"].append({
+                    "type": "text",
+                    "text": message.content
+                })
+
+            # Extract tool calls
+            if hasattr(message, 'tool_calls') and message.tool_calls:
+                for tool_call in message.tool_calls:
                     # Parse server and tool name
-                    full_name = block.name
+                    full_name = tool_call.function.name
                     if "_" in full_name:
                         server, tool_name = full_name.split("_", 1)
                     else:
                         server = "unknown"
                         tool_name = full_name
-                    
+
+                    # Parse arguments (they come as JSON string)
+                    import json
+                    arguments = json.loads(tool_call.function.arguments)
+
                     result["tool_calls"].append({
-                        "id": block.id,
+                        "id": tool_call.id,
                         "name": tool_name,
                         "server": server,
-                        "arguments": block.input
+                        "arguments": arguments
                     })
-            
+
             return result
-            
+
         except Exception as e:
-            logger.error(f"Error calling Claude API: {e}")
+            logger.error(f"Error calling LLM via LiteLLM: {e}")
             raise
 
 
-def create_llm_provider(provider: str, model: str, api_key: str) -> LLMProvider:
+def create_llm_provider(provider: str, model: str, api_key: Optional[str] = None) -> LLMProvider:
     """
-    Factory function to create appropriate LLM provider.
-    
+    Factory function to create LLM provider.
+
     Args:
-        provider: Provider name (anthropic, openai)
+        provider: Provider name (used for model prefix if needed)
         model: Model identifier
         api_key: API key
-        
+
     Returns:
         LLMProvider instance
     """
-    if provider == "anthropic":
-        return AnthropicProvider(model, api_key)
-    else:
-        raise ValueError(f"Unsupported LLM provider: {provider}")
+    # LiteLLM model format examples:
+    # - Anthropic: "claude-3-opus-20240229" or "anthropic/claude-3-opus-20240229"
+    # - OpenAI: "gpt-4" or "openai/gpt-4"
+    # - Gemini: "gemini/gemini-pro"
+    # - Bedrock: "bedrock/anthropic.claude-v2"
+    # - Ollama: "ollama/llama2"
+
+    # If provider is specified and model doesn't have provider prefix, add it
+    if provider and "/" not in model:
+        # Special cases where we don't need prefix
+        if provider == "anthropic" and model.startswith("claude"):
+            pass  # Anthropic models work without prefix
+        elif provider == "openai" and model.startswith("gpt"):
+            pass  # OpenAI models work without prefix
+        else:
+            model = f"{provider}/{model}"
+
+    return LLMProvider(model, api_key)

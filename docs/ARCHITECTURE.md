@@ -29,6 +29,8 @@ The autonomous agent framework uses a modular architecture with 100% LLM-driven 
 - Validates all settings before execution
 - Loads from agent.conf, .env, CLI arguments
 - Supports --show-mcps and --list-tools flags
+- Separate console and file logging with independent log levels
+- Timestamped log files in logs/ directory
 
 **5. Main Entry (`src/agent.py`)**
 - Orchestrates all components

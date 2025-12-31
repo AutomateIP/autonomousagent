@@ -10,14 +10,15 @@ Get up and running with the Autonomous Agent Framework in 5 minutes.
 
 ## Installation
 
-### Step 1: Install Dependencies
+### Step 1: Clone and Install Dependencies
 
 ```bash
-cd autonomous-agent
+git clone https://github.com/AutomateIP/autonomousagent.git
+cd autonomous_agent
 uv sync
 ```
 
-This installs all 91 required packages (~30 seconds).
+This installs all required packages (~30 seconds).
 
 ### Step 2: Configure API Key
 
@@ -30,16 +31,22 @@ Edit `.env` and add your API key:
 ANTHROPIC_API_KEY=sk-ant-api03-your-actual-key-here
 ```
 
-### Step 3: Test the Agent
+### Step 3: Configure MCP Servers
 
 ```bash
-# Test basic agent (no tools)
-uv run python -m src.agent \
-  --agent-file tests/prompts/test_no_tools.prompt \
-  --mcp-config mcp_config_empty.json
+cp examples/mcp_config.json.example mcp_config.json
 ```
 
-**Expected output**: Agent explains what an autonomous agent is (takes ~5 seconds).
+Edit `mcp_config.json` and update paths to use **absolute paths** for your system.
+
+### Step 4: Test the Agent
+
+```bash
+# Test with time server
+uv run agent --agent-file tests/prompts/test_time.prompt
+```
+
+**Expected output**: Agent will tell you the current time using the time MCP server (takes ~5-10 seconds).
 
 ## Your First Custom Task
 
@@ -52,41 +59,39 @@ echo "What are the key principles of good software design?" > my_first_task.prom
 ### Run the Agent
 
 ```bash
-uv run python -m src.agent --agent-file my_first_task.prompt --mcp-config mcp_config_empty.json
+uv run agent --agent-file my_first_task.prompt
 ```
 
 **Result**: Agent will provide a thoughtful, detailed response!
 
 ## Next Steps
 
-### Enable MCP Tools
+### Configure Itential MCP (Optional)
 
-To use MCP servers (like itential-mcp, time, filesystem):
+If you want to use the Itential Platform integration:
 
-1. **Configure MCP server** (if using itential-mcp):
+1. **Configure Itential MCP server**:
 ```bash
-cp itential-mcp.conf.example itential-mcp.conf
-# Edit itential-mcp.conf with your credentials
+cp examples/itential-mcp.conf.example itential-mcp.conf
+# Edit itential-mcp.conf with your Itential Platform credentials
 ```
 
-2. **Update mcp_config.json paths** to use absolute paths
-
-3. **Run with tools enabled**:
+2. **Test Itential integration**:
 ```bash
-uv run python -m src.agent --agent-file tests/prompts/test_itential_health.prompt
+uv run agent --agent-file tests/prompts/test_itential_health.prompt
 ```
 
 ### Customize Agent Behavior
 
 Edit `agent.conf` to change:
-- **Model**: `claude-3-haiku-20240307` (faster/cheaper)
+- **Logging**:
+  - `console_log_level = ERROR` (clean terminal output)
+  - `file_log_level = INFO` (detailed logs in logs/ directory)
+- **Model**: `claude-3-haiku-20240307` (faster/cheaper) or `claude-opus-4-5-20251101` (most capable)
 - **Temperature**: `0.3` (more focused) or `0.9` (more creative)
 - **Max iterations**: `15` (allow more reasoning steps)
 
-```bash
-# Run with custom config
-uv run python -m src.agent --agent-file my_task.prompt
-```
+The agent uses `agent.conf` by default. All settings can be overridden via CLI arguments.
 
 ### Create Your Own Prompts
 
@@ -104,23 +109,29 @@ Explain the benefits of autonomous agents in 3 bullet points.
 
 Run it:
 ```bash
-uv run python -m src.agent --agent-file examples/simple.prompt --mcp-config mcp_config_empty.json
+uv run agent --agent-file examples/simple.prompt
 ```
 
 ## Common Commands
 
 ```bash
 # Basic execution
-uv run python -m src.agent --agent-file task.prompt
+uv run agent --agent-file task.prompt
 
-# With debug logging
-uv run python -m src.agent --agent-file task.prompt --debug
+# With debug logging (shows everything in console and file)
+uv run agent --agent-file task.prompt --debug
 
-# Use faster model
-uv run python -m src.agent --agent-file task.prompt --llm-model claude-3-haiku-20240307
+# Use different model
+uv run agent --agent-file task.prompt --llm-model claude-3-haiku-20240307
 
-# Without MCP tools
-uv run python -m src.agent --agent-file task.prompt --mcp-config mcp_config_empty.json
+# List available MCP servers
+uv run agent --show-mcps
+
+# List all available tools
+uv run agent --list-tools
+
+# View log files (detailed execution information)
+tail -f logs/agent_*.log
 ```
 
 ## Troubleshooting

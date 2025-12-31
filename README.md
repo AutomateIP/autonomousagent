@@ -1,6 +1,14 @@
 # Autonomous Agent Framework
 
-A production-ready autonomous agent framework with universal MCP (Model Context Protocol) support. Uses LangGraph for intelligent decision-making and connects to MCP servers to execute tasks autonomously.
+A production-ready autonomous agent framework with universal MCP (Model Context Protocol) support. This framework enables LLM-powered agents to autonomously execute complex tasks using dynamically discovered tools from MCP servers.
+
+## What is this?
+
+An autonomous AI agent that:
+- 🤖 **Makes its own decisions** - The LLM autonomously chooses which tools to use and when
+- 🔌 **Connects to MCP servers** - Discovers and uses tools from any MCP-compatible server
+- 🔄 **Executes multi-step workflows** - Handles complex tasks requiring multiple tool calls
+- 📝 **Logs everything** - Separate console and file logging for debugging and auditing
 
 ## Features
 
@@ -9,20 +17,27 @@ A production-ready autonomous agent framework with universal MCP (Model Context 
 - 🛠️ **Dynamic Tool Discovery** - Automatically finds and uses available tools
 - ⚙️ **Flexible Configuration** - CLI > Config File > Env Variables > Defaults
 - 🔄 **Multi-Step Reasoning** - Handles complex workflows autonomously
-- 📊 **Production Ready** - Tested, documented, and battle-tested
+- 📊 **Structured Logging** - Separate console and file logging with configurable levels
+- 📖 **Production Ready** - Tested, documented, and battle-tested
 
 ## Quick Start
 
 ```bash
-# 1. Install
-cd autonomous-agent && uv sync
+# 1. Clone and install
+git clone https://github.com/AutomateIP/autonomousagent.git
+cd autonomous_agent
+uv sync
 
-# 2. Configure
+# 2. Configure API key
 cp .env.example .env
-# Add your ANTHROPIC_API_KEY to .env
+# Edit .env and add: ANTHROPIC_API_KEY=your-key-here
 
-# 3. Run
-uv run python -m src.agent --agent-file tests/prompts/test_no_tools.prompt --mcp-config mcp_config_empty.json
+# 3. Configure MCP servers (optional)
+cp examples/mcp_config.json.example mcp_config.json
+# Edit mcp_config.json with your MCP server paths
+
+# 4. Run a simple task
+uv run agent --agent-file tests/prompts/test_time.prompt
 ```
 
 **📖 See [docs/QUICKSTART.md](docs/QUICKSTART.md) for detailed setup guide**
@@ -39,10 +54,11 @@ uv run python -m src.agent --agent-file tests/prompts/test_no_tools.prompt --mcp
 # Install dependencies
 uv sync
 
-# Set up configuration
+# Set up configuration files
 cp .env.example .env
-cp agent.conf.example agent.conf
-# Edit files with your settings
+cp examples/mcp_config.json.example mcp_config.json
+# Edit .env with your ANTHROPIC_API_KEY
+# Edit mcp_config.json with your MCP server paths (use absolute paths)
 ```
 
 **See [docs/QUICKSTART.md](docs/QUICKSTART.md) for step-by-step installation**
@@ -52,23 +68,31 @@ cp agent.conf.example agent.conf
 ### Basic Usage
 
 ```bash
-uv run python -m src.agent --agent-file <your-prompt-file>
+# Run with default configuration (agent.conf and mcp_config.json)
+uv run agent --agent-file <your-prompt-file>
 ```
 
 ### With Debug Logging
 
 ```bash
-uv run python -m src.agent --agent-file task.prompt --debug
+# Enable debug output to console and detailed file logging
+uv run agent --agent-file task.prompt --debug
 ```
 
 ### Override Settings
 
 ```bash
 # Use different model
-uv run python -m src.agent --agent-file task.prompt --llm-model claude-3-haiku-20240307
+uv run agent --agent-file task.prompt --llm-model claude-3-haiku-20240307
 
-# Custom configuration
-uv run python -m src.agent --config my.conf --agent-file task.prompt
+# Custom configuration file
+uv run agent --config my.conf --agent-file task.prompt
+
+# List available MCP servers
+uv run agent --show-mcps
+
+# List all available tools
+uv run agent --list-tools
 ```
 
 ## Configuration
@@ -90,21 +114,38 @@ CLI Arguments > agent.conf > Environment Variables > Defaults
 ```ini
 [agent]
 system_prompt = ./prompts/agent_system.prompt
-log_level = INFO
-max_iterations = 10
+# Console logging level (what you see in terminal)
+console_log_level = ERROR
+# File logging level (what gets written to logs/)
+file_log_level = INFO
+max_iterations = 15
 
 [llm]
 provider = anthropic
-model = claude-sonnet-4-20250514
+model = claude-sonnet-4-5-20250929
 temperature = 0.7
 max_tokens = 4096
 
 [mcp]
 config_file = ./mcp_config.json
+itential_mcp_conf = ./itential-mcp.conf
 timeout = 120
 ```
 
-See `agent.conf.example` for full options.
+See [examples/agent.conf.example](examples/agent.conf.example) for full options.
+
+### Logging Configuration
+
+The agent supports separate console and file logging levels:
+
+- **console_log_level**: Controls what appears in your terminal (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+- **file_log_level**: Controls what gets written to `logs/agent_TIMESTAMP.log`
+
+Recommended setup:
+- Console: `ERROR` (clean terminal output)
+- File: `INFO` (detailed logs for debugging)
+
+Log files are automatically created with timestamps in the `logs/` directory.
 
 ## Creating Prompts
 
@@ -139,18 +180,29 @@ Report key metrics and any issues found.
 ## Project Structure
 
 ```
-autonomous-agent/
-├── src/                  # Source code (6 modules)
-├── mcps/                 # MCP servers
-├── prompts/              # System prompts  
+autonomous_agent/
+├── src/                  # Source code
+│   ├── agent.py          # Main entry point
+│   ├── agent_core.py     # LangGraph state machine
+│   ├── config.py         # Configuration management
+│   ├── llm_provider.py   # LLM provider interface
+│   └── mcp_client.py     # MCP server client
+├── prompts/              # System prompts
 ├── tests/prompts/        # Test prompt files
 ├── examples/             # Example configurations
-├── logs/                 # Log output
+│   ├── agent.conf.example
+│   ├── mcp_config.json.example
+│   └── itential-mcp.conf.example
+├── logs/                 # Generated log files (timestamped)
+├── files/                # Agent workspace
+│   └── templates/        # Report templates
 ├── docs/                 # Documentation
-├── agent.conf            # Main configuration
-├── mcp_config.json       # MCP server config
-└── .env                  # API keys
+├── agent.conf            # Main configuration (not tracked in git)
+├── mcp_config.json       # MCP server config (not tracked in git)
+└── .env                  # API keys (not tracked in git)
 ```
+
+**Note**: Configuration files with personal settings are not tracked in git. Use the example files in `examples/` as templates.
 
 ## MCP Servers
 
@@ -219,10 +271,11 @@ Check `tests/prompts/` for working examples:
 ## Documentation
 
 - **[docs/QUICKSTART.md](docs/QUICKSTART.md)** - Get started in 5 minutes
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System architecture and design
 - **[docs/ITENTIAL_INTEGRATION.md](docs/ITENTIAL_INTEGRATION.md)** - Itential Platform integration
+- **[docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)** - Common issues and solutions
 - **[docs/ENHANCEMENTS.md](docs/ENHANCEMENTS.md)** - Future roadmap
-- **[docs/PROJECT_STATUS.md](docs/PROJECT_STATUS.md)** - Implementation status
-- **[session_summary/IMPLEMENTATION_SESSION.md](session_summary/IMPLEMENTATION_SESSION.md)** - Build session notes
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
 
 ## Troubleshooting
 
@@ -275,8 +328,8 @@ See LICENSE file for details.
 
 ---
 
-**Version**: 0.1.0  
-**Status**: Production Ready ✅  
-**Last Updated**: 2025-10-01
+**Version**: 1.0.0
+**Status**: Production Ready ✅
+**Last Updated**: 2025-12-31
 
 **Get Started**: [docs/QUICKSTART.md](docs/QUICKSTART.md)

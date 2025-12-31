@@ -1,6 +1,6 @@
 # Contributing to Autonomous Agent
 
-Thank you for your interest in contributing! This document provides guidelines for contributing to this project.
+This is an experimental project for learning about autonomous agents and MCP. Feel free to fork, experiment, and learn! This document provides guidelines for development workflow.
 
 ## Getting Started
 
@@ -75,6 +75,15 @@ Thank you for your interest in contributing! This document provides guidelines f
 - Use `.env` for secrets (already in `.gitignore`)
 - Review the security section in README before contributing
 
+## Experimentation
+
+This project is designed for learning and experimentation. Some ideas to explore:
+- Try different LLM models and compare reasoning
+- Experiment with custom MCP servers
+- Modify the system prompt to change agent behavior
+- Add new configuration options
+- Test with different types of tasks
+
 ## Questions?
 
-Open an issue for questions or discussion!
+Open an issue for questions or to share what you've learned!

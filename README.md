@@ -1,6 +1,6 @@
 # Autonomous Agent Framework
 
-A production-ready autonomous agent framework with universal MCP (Model Context Protocol) support. This framework enables LLM-powered agents to autonomously execute complex tasks using dynamically discovered tools from MCP servers.
+An experimental autonomous agent framework with MCP (Model Context Protocol) support for learning and experimentation. This framework enables LLM-powered agents to autonomously execute complex tasks using dynamically discovered tools from MCP servers.
 
 ## What is this?
 
@@ -12,13 +12,12 @@ An autonomous AI agent that:
 
 ## Features
 
-- 🤖 **100% LLM-Driven** - All decisions made autonomously through LangGraph
-- 🔌 **Universal MCP Support** - Works with any MCP server (FastMCP, standard MCP)
+- 🤖 **LLM-Driven Decision Making** - Uses LangGraph for autonomous task execution
+- 🔌 **MCP Support** - Connects to MCP servers (FastMCP, standard MCP)
 - 🛠️ **Dynamic Tool Discovery** - Automatically finds and uses available tools
 - ⚙️ **Flexible Configuration** - CLI > Config File > Env Variables > Defaults
 - 🔄 **Multi-Step Reasoning** - Handles complex workflows autonomously
 - 📊 **Structured Logging** - Separate console and file logging with configurable levels
-- 📖 **Production Ready** - Tested, documented, and battle-tested
 
 ## Quick Start
 
@@ -309,11 +308,7 @@ Configure in `agent.conf` or use `--llm-model` flag.
 
 ## Contributing
 
-Contributions welcome! Please:
-1. Keep LLM-driven philosophy (no hardcoded logic)
-2. Add tests for new features
-3. Update documentation
-4. Follow existing code style
+This is an experimental project for learning purposes. Feel free to fork and experiment! See [CONTRIBUTING.md](CONTRIBUTING.md) for development workflow.
 
 ## Acknowledgments
 
@@ -328,8 +323,7 @@ See LICENSE file for details.
 
 ---
 
-**Version**: 1.0.0
-**Status**: Production Ready ✅
+**Purpose**: Learning and experimentation with autonomous agents and MCP
 **Last Updated**: 2025-12-31
 
 **Get Started**: [docs/QUICKSTART.md](docs/QUICKSTART.md)

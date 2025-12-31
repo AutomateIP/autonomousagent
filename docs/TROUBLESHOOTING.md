@@ -211,6 +211,6 @@ uv run python -m src.agent --agent-file tests/prompts/test_no_tools.prompt --mcp
 
 - STDIO transport only (HTTP coming)
 - No conversation persistence
-- Max 10 iterations (configurable)
-- Filesystem limited to workspace/ directory
+- Max 15 iterations (configurable)
+- Filesystem MCP limited to files/ directory
 - Upstream UV deprecation warnings (from dependencies)

@@ -57,11 +57,7 @@ Thumbs.db
 logs/*
 !logs/.gitkeep
 
-# Workspace (generated files)
-workspace/*
-!workspace/.gitkeep
-
-# Test outputs (generated files)
+# Agent workspace (generated files)
 files/*
 !files/.gitkeep
 !files/templates

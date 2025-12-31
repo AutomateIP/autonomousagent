@@ -1,0 +1,155 @@
+# This is an example Itential MCP server configuration file.  It shows the
+# availble configuration options.   Configuration options are grouped into
+# sections. For each configuration option, there is a description of the option
+# along with the application default setting and name of the environment
+# varilable that can be used to override the value.
+
+# The server section handles configuration options for running the MCP server.
+# All configuration options in this section are optional and can be overridden
+# using environment variables prefixed with ITENTIAL_MCP_SERVER
+[server]
+
+
+transport = stdio
+
+log_level = INFO
+
+include_tags = get_health,get_devices,describe_job,describe_instance,describe_resource,get_instances,get_resources,port_turn_up_service,ip_mask_to_cidr,application_infra_provisioning,application_infra_provisioning_update_instance,ip_blocking_create,ip_blocking_delete,ip_blocking_verify,service,start_workflow,get_workflows,run_command,bindings
+
+
+[platform]
+
+host = your-platform-host.example.com
+
+disable_tls = False
+
+disable_verify = False
+
+client_id = your-client-id-here
+
+client_secret = your-client-secret-here
+
+timeout = 15
+
+#
+#ITENTIAL_MCP_PLATFORM_HOST="your-platform-host.example.com" \
+#ITENTIAL_MCP_PLATFORM_CLIENT_ID="your-client-id-here" \
+#ITENTIAL_MCP_PLATFORM_CLIENT_SECRET="your-client-secret-here" \
+#itential-mcp run
+
+# Dynamic Tool Configuration
+# ===========================
+# 
+# The following sections define dynamic tools that expose Itential Platform
+# workflow triggers as MCP tools. Each tool section must start with "tool:"
+# followed by a unique identifier. These tools are automatically registered
+# with the MCP server at startup.
+
+# The value for tool_name must be unique in the configuration 
+[tool:port_turn_up_service]
+
+# The tool type - currently only "endpoint" is supported for workflow triggers
+# This is a required value
+type = endpoint
+
+# The name of the trigger in Itential Platform (must match exactly).  This is a
+# required value
+#
+name = Port Turn Up Service
+
+# The name of the automation containing the trigger  (must match exactly).
+# This is a required value when the type is set to `endpoint`
+# 
+automation = Port Turn Up Service
+
+# Optional description of what this tool does
+#
+# description = null
+
+# Optional comma-separated list of tags for tool filtering
+# Tools automatically get "dynamic" and the trigger name as tags
+#
+# tags = null
+
+
+[tool:ip_mask_to_cidr]
+
+# The tool type - currently only "endpoint" is supported for workflow triggers
+# This is a required value
+type = endpoint
+
+# The name of the trigger in Itential Platform (must match exactly).  This is a
+# required value
+#
+name = Convert IP Mask to CIDR
+
+# The name of the automation containing the trigger  (must match exactly).
+# This is a required value when the type is set to `endpoint`
+# 
+automation = IP Mask to CIDR
+
+
+[tool:application_infra_provisioning]
+
+# The tool type - currently only "endpoint" is supported for workflow triggers
+# This is a required value
+type = endpoint
+
+# The name of the trigger in Itential Platform (must match exactly).  This is a
+# required value
+#
+name = Application Infra Provisioning
+
+# The name of the automation containing the trigger  (must match exactly).
+# This is a required value when the type is set to `endpoint`
+# 
+automation = Application Infra Provisioning
+
+
+[tool:application_infra_provisioning_update_instance]
+
+# The tool type - currently only "endpoint" is supported for workflow triggers
+# This is a required value
+type = endpoint
+
+# The name of the trigger in Itential Platform (must match exactly).  This is a
+# required value
+#
+name = Application Infra Provisioning - Update Instance Status
+
+# The name of the automation containing the trigger  (must match exactly).
+# This is a required value when the type is set to `endpoint`
+# 
+automation = Application Infra Provisioning - Update Instance Status
+
+
+[tool:ip_blocking_create]
+type = endpoint
+name = IP Blocking Service Create
+automation = IP Blocking Service Create
+
+
+[tool:ip_blocking_delete]
+type = endpoint
+name = IP Blocking Service Delete
+automation = IP Blocking Service Delete
+
+[tool:ip_blocking_verify]
+type = endpoint
+name = IP Blocking Service Verify
+automation = IP Blocking Service Verify
+
+#Gateway Manager Service
+[tool:aws_ec2_list]
+type = service
+name = aws-ec2-list
+cluster = selab-iag5-standalone
+description = List all EC2 instancces in a given region
+tags = custom,service
+
+[tool:netmiko_ios_parse_interface]
+type = service
+name = netmiko-ios-parse-interface
+cluster = selab-iag5-standalone
+description = Parse interfaces on an IOS device provided a IP address
+tags = custom,service
